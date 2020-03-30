@@ -5,11 +5,13 @@
  */
 package redes;
 
+import controladores.ControladorJuego;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import servidor.Interaccion;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import modelos.Juego;
+import modelos.Jugador;
 
 /**
  *
@@ -18,33 +20,34 @@ import servidor.Interaccion;
 public class RedServidor {
 
     private int puerto;
-    private InetAddress grupo;
-    private MulticastSocket socket;
+    private Juego juego;
+    private static ArrayList<Jugador> jugadores;
+    private ServerSocket listenSocket;
+    private ControladorJuego controladorJuego;
 
-    public RedServidor(String grupo, int puerto) throws IOException {
-        this.grupo = InetAddress.getByName(grupo);
+    public RedServidor(int puerto) {
         this.puerto = puerto;
-        socket = new MulticastSocket(puerto);
-
-        socket.setBroadcast(false);
-        socket.setLoopbackMode(false);
-        socket.setTimeToLive(2);
-        socket.joinGroup(this.grupo);
+        this.juego = new Juego();
+        jugadores = new ArrayList<>();
+        this.controladorJuego = new ControladorJuego(jugadores);
     }
 
     public void activar() throws IOException {
+        System.out.println("<<binding port");
+        this.listenSocket = new ServerSocket(this.puerto);
         this.ejecutarServicios();
     }
 
-    public void ejecutarServicios() {
+    private void ejecutarServicios() {
         while (true) {
             try {
-                DatagramPacket paquete = new DatagramPacket(new byte[Interaccion.MAX_BUFFER_SIZE], Interaccion.MAX_BUFFER_SIZE);
-                socket.receive(paquete);
-                byte[] data = paquete.getData();
-                socket.send(paquete);
+                System.out.println("<<Esperando clientes");
+                Socket clientSocket = listenSocket.accept();
+                System.out.println("<<Cliente recibido");
+                Jugador jugador = new Jugador(clientSocket, this.controladorJuego);
+                this.jugadores = controladorJuego.agregarJugadorMapa(jugador);
             } catch (IOException ex) {
-                System.out.println("<<ERROR RECIBIENDO DATOS");
+                System.out.println("<<Error al conectar cliente");
             }
         }
     }

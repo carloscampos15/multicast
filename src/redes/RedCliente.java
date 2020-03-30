@@ -7,13 +7,18 @@ package redes;
 
 import cliente.Cliente;
 import cliente.MensajeEntradaMC;
-import java.io.BufferedReader;
+import cliente.MensajeEntradaTCP;
+import cliente.Notificable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import servidor.Interaccion;
 
 /**
@@ -26,8 +31,13 @@ public class RedCliente {
     private int puerto;
     private MulticastSocket socket;
     private Cliente cliente;
+    private Notificable notificable;
 
-    public RedCliente(String grupo, int puerto, Cliente cliente) throws UnknownHostException, IOException {
+    //comunicacion tcp
+    private DataInputStream entrada;
+    private DataOutputStream salida;
+
+    public RedCliente(String tcp_ip, String grupo, int puerto, Cliente cliente) throws UnknownHostException, IOException {
         this.grupo = InetAddress.getByName(grupo);
         this.puerto = puerto;
         this.socket = new MulticastSocket(puerto);
@@ -37,43 +47,91 @@ public class RedCliente {
         socket.setLoopbackMode(false);
         socket.setTimeToLive(2);
         socket.joinGroup(this.grupo);
+
+        Socket socket_tcp = new Socket(tcp_ip, this.puerto);
+        this.entrada = new DataInputStream(socket_tcp.getInputStream());
+        this.salida = new DataOutputStream(socket_tcp.getOutputStream());
+    }
+
+    public Notificable getNotificable() {
+        return notificable;
+    }
+
+    public void setNotificable(Notificable notificable) {
+        this.notificable = notificable;
     }
 
     public void ejecutar() {
-        MensajeEntradaMC readMessage = new MensajeEntradaMC(socket);
-        readMessage.start();
+        MensajeEntradaMC readMessageMC = new MensajeEntradaMC(notificable, socket);
+        readMessageMC.start();
+        
+        MensajeEntradaTCP readMessageTCP = new MensajeEntradaTCP(notificable, entrada);
+        readMessageTCP.start();
 
-        BufferedReader myinput = new BufferedReader(new InputStreamReader(System.in));
-        boolean state = true;
-        try {
-            while (state) {
-                byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
-                String accion = myinput.readLine();
-                String line = "";
-                //CASOS PARA ACCIONES
-                switch (accion) {
-                    case "INICIAR":
-                        data[0] = Interaccion.NUEVO_CLIENTE;
-                        break;
-                    case "SALIR":
-                        data[0] = Interaccion.SALIDA_CLIENTE;
-                        state = false;
-                        break;
-                }
-                byte[] nombre = this.cliente.getNombre().getBytes();
-                data[1] = (byte) nombre.length;
-                System.arraycopy(nombre, 0, data, 2, nombre.length);
+//        BufferedReader myinput = new BufferedReader(new InputStreamReader(System.in));
+//        boolean state = true;
+//        try {
+//            while (state) {
+//                byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+//                String accion = myinput.readLine();
+//                
+//                JSONObject sendJson = new JSONObject();
+//                
+//                switch (accion) {
+//                    case "INICIAR":
+//                        sendJson.put("accion", Interaccion.NUEVO_CLIENTE);
+//                        break;
+//                    case "SALIR":
+//                        sendJson.put("accion", Interaccion.SALIDA_CLIENTE);
+//                        state = false;
+//                        break;
+//                    case "MOVER":
+//                        sendJson.put("accion", Interaccion.MOVER_CLIENTE);
+//                        sendJson.put("movimiento", new Point(1,2));
+//                        break;
+//                }
+//                sendJson.put("nombre_usuario", this.cliente.getNombre());
+//                
+//                byte[] hoja = new String(sendJson.toString()).getBytes();
+//                
+//                DatagramPacket dp = new DatagramPacket(hoja, hoja.length, this.grupo, this.puerto);
+//
+//                socket.send(dp);
+//
+//            }
+//
+//            socket.leaveGroup(grupo);
+//            socket.close();
+//        } catch (IOException ex) {
+//            System.out.println(">>OCURRIO UN ERROR AL ENVIAR LOS DATOS");
+//        } catch (JSONException ex) {
+//            System.out.println(">>OCURRIO UN ERROR AL TRANFORMAR LOS DATOS A JSON");
+//        }
+    }
 
-                DatagramPacket dp = new DatagramPacket(data, Interaccion.MAX_BUFFER_SIZE, this.grupo, this.puerto);
+    /**
+     * Asigna el respectivo nombre al cliente
+     *
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    public boolean updateNameUser(String name) throws IOException, JSONException {
+        //data en formato json
+        byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+        JSONObject sendJson = new JSONObject();
+        sendJson.put("accion", Interaccion.NUEVO_CLIENTE);
+        sendJson.put("nombre_usuario", this.cliente.getNombre());
 
-                socket.send(dp);
+        //enviar al tcp servidor
+        salida.writeUTF(sendJson.toString());
+        salida.flush();
 
-            }
+        //enviar al multicast
+        byte[] hoja = new String(sendJson.toString()).getBytes();
+        DatagramPacket dp = new DatagramPacket(hoja, hoja.length, this.grupo, this.puerto);
+        socket.send(dp);
 
-            socket.leaveGroup(grupo);
-            socket.close();
-        } catch (IOException ex) {
-            System.out.println(">>OCURRIO UN ERROR AL ENVIAR LOS DATOS");
-        }
+        return true;
     }
 }

@@ -3,17 +3,19 @@ package cliente;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import org.json.JSONException;
+import org.json.JSONObject;
 import servidor.Interaccion;
 
 public class MensajeEntradaMC extends Thread {
 
     private boolean isAlive;
-
-    
     private MulticastSocket multicastSocket;
+    private Notificable notificable;
 
-    public MensajeEntradaMC(MulticastSocket multicastSocket) {
+    public MensajeEntradaMC(Notificable notificable, MulticastSocket multicastSocket) {
         this.multicastSocket = multicastSocket;
+        this.notificable = notificable;
         this.isAlive = true;
     }
 
@@ -25,19 +27,22 @@ public class MensajeEntradaMC extends Thread {
                 DatagramPacket dp = new DatagramPacket(new byte[Interaccion.MAX_BUFFER_SIZE], Interaccion.MAX_BUFFER_SIZE);
                 multicastSocket.receive(dp);
                 byte[] data = dp.getData();
-                
-                switch (data[0]) {
+                JSONObject receiveMessage = new JSONObject(new String(data));
+                              
+                switch (receiveMessage.getInt("accion")) {
                     case Interaccion.NUEVO_CLIENTE:
+                        this.notificable.login(receiveMessage.getString("nombre_usuario")+": ha iniciado sesión");
                         break;
                     case Interaccion.SALIDA_CLIENTE:
                         isAlive = false;
                         break;
+                    case Interaccion.MOVER_CLIENTE:
+                        break;
                 }
-                
-                System.out.println(new String(data));
-
             } catch (IOException ex) {
                 System.out.println(">>OCURRIO UN ERROR AL RECIBIR LOS DATOS");
+            } catch (JSONException ex) {
+                System.out.println(">>OCURRIO UN ERROR AL CONVERTIR LOS DATOS");
             }
         }
     }

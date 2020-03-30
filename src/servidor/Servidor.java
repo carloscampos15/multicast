@@ -21,17 +21,17 @@ public class Servidor {
     }
 
     public void ejecutarServidor() {
-        this.redServidor.ejecutarServicios();
+        try {
+            this.redServidor.activar();
+        } catch (IOException ex) {
+            System.out.println("<<NO PUDE INICIAR MIS SERVICIOS");
+        }
     }
 
     public static void main(String[] args) {
-        try {
-            RedServidor red = new RedServidor("229.2.2.2", Interaccion.PUERTO);
-            
-            Servidor servidor = new Servidor(red);
-            servidor.ejecutarServidor();
-        } catch (IOException ex) {
-            System.out.println("<<ERROR INICIANDO MIS SERVICIOS");
-        }
+        RedServidor red = new RedServidor(Interaccion.PUERTO);
+        Servidor servidor = new Servidor(red);
+        servidor.ejecutarServidor();
+
     }
 }

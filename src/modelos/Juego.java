@@ -5,6 +5,7 @@
  */
 package modelos;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -14,8 +15,22 @@ import java.util.ArrayList;
 public class Juego {
 
     private ArrayList<Jugador> jugadores;
-
-    public void addPlayer(Jugador jugador) {
+        
+    public void addJugador(Jugador jugador) {
+        Point posicion = this.generarPosicion();
+        jugador.setPosicion(posicion);
         jugadores.add(jugador);
+    }
+
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
+
+    public void setJugadores(ArrayList<Jugador> jugadores) {
+        this.jugadores = jugadores;
+    }
+    
+    private Point generarPosicion(){
+        return null;
     }
 }
