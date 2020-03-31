@@ -29,6 +29,14 @@ public class Cliente {
     public void ejecutarCliente() {
         this.redCliente.ejecutar();
     }
+    
+    public void ejecutarSocketPPT(NotificablePPT notificable){
+        this.redCliente.setNotificablePPT(notificable);
+    }
+    
+    public void terminarJuegoPPT(){
+        this.redCliente.terminarJuegoPPT();
+    }
 
     public String getNombre() {
         return nombre;
@@ -55,6 +63,16 @@ public class Cliente {
     
     public boolean setPosicion(int identificador, int x, int y) throws JSONException, IOException {
         this.redCliente.setPosicion(this.getNombre(), identificador, x, y);
+        return true;
+    }
+    
+    public boolean iniciarPPT(int identificador1, int identificador2) throws JSONException, IOException {
+        this.redCliente.iniciarPPT(identificador1, identificador2);
+        return true;
+    }
+    
+    public boolean jugarPPT(int identificador, int identificadorSala, String juegoAccion) throws JSONException, IOException{
+        this.redCliente.jugarPPT(identificador, identificadorSala, juegoAccion);
         return true;
     }
     

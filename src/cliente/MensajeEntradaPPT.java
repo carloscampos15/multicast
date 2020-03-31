@@ -12,23 +12,28 @@ import org.json.JSONObject;
 import servidor.Interaccion;
 
 /**
- * Es el hilo encargado de estar siempre pendiente de recibir un mensaje (TCP)
  *
- * @author Karen Castaño Orjuela Castaño
- * @author Carlos Alberto Campos Armero
+ * @author carlo
  */
-public class MensajeEntradaTCP extends Thread {
-
+public class MensajeEntradaPPT extends Thread{
     private boolean isAlive;
     private DataInputStream entrada;
-    private Notificable notificable;
+    private NotificablePPT notificable;
 
-    public MensajeEntradaTCP(Notificable notificable, DataInputStream entrada) {
+    public MensajeEntradaPPT(NotificablePPT notificable, DataInputStream entrada) {
         this.notificable = notificable;
         this.entrada = entrada;
         this.isAlive = true;
     }
 
+    public boolean isIsAlive() {
+        return isAlive;
+    }
+
+    public void setIsAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+    
     @Override
     public void run() {
         while (isAlive) {
@@ -36,17 +41,8 @@ public class MensajeEntradaTCP extends Thread {
                 String msg = entrada.readUTF();
                 JSONObject receivedJson = new JSONObject(msg);
                 switch (receivedJson.getInt("accion")) {
-                    case Interaccion.NUEVO_CLIENTE:
-                        this.notificable.login(receivedJson.toString(), 2);
-                        break;
-                    case Interaccion.SESION_NUEVO_CLIENTE:
-                        this.notificable.nuevoUsuario(receivedJson.toString(), 2);
-                        break;
-                    case Interaccion.SALIDA_CLIENTE:
-                        isAlive = false;
-                        break;
-                    case Interaccion.NUEVO_PPT:
-                        this.notificable.nuevoPPT(receivedJson.toString(), 2);
+                    case Interaccion.GANADOR_PPT:
+                        this.notificable.ganadorPPT(receivedJson.toString(), 2);
                         break;
                 }
             } catch (IOException e) {
@@ -56,5 +52,4 @@ public class MensajeEntradaTCP extends Thread {
             }
         }
     }
-
 }

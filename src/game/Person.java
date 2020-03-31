@@ -23,6 +23,7 @@ public class Person extends Sprite {
     public static final int GROW_SIZE = 4;
     protected int identificador;
     protected String nombre;
+    protected boolean state;
 
     protected int step = 5;
 
@@ -30,11 +31,24 @@ public class Person extends Sprite {
         super(x, y, height, width);
         this.identificador = identificador;
         this.nombre = nombre;
+        this.state = true;
         setColor(Color.MAGENTA);
     }
 
     public int getIdentificador() {
         return identificador;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public boolean isState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
     
     /**

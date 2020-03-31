@@ -6,7 +6,9 @@
 package gui;
 
 import cliente.Cliente;
+import cliente.Notificable;
 import game.Mundo;
+import game.Person;
 import gamebase.GraphicContainer;
 import gamebase.PanelContainer;
 import java.awt.Rectangle;
@@ -22,7 +24,7 @@ import org.json.JSONObject;
  * @author Carlos Alberto Campos Armero
  */
 public class GameWindow extends javax.swing.JFrame
-        implements GraphicContainer, cliente.Notificable {
+        implements GraphicContainer, Notificable {
 
     protected Mundo mundo;
     protected PanelContainer panel;
@@ -186,18 +188,6 @@ public class GameWindow extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTabbedPane1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane1KeyPressed
-        this.panel.keyPressed(evt);
-
-        try {
-            this.cliente.moverUsuario(this.mundo.getPerson().getIdentificador(), this.mundo.getPerson().getX(), this.mundo.getPerson().getY());
-        } catch (JSONException ex) {
-            System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
-        } catch (IOException ex) {
-            System.out.println(">>ERROR ENVIANDO MENSAJE");
-        }
-    }//GEN-LAST:event_jTabbedPane1KeyPressed
-
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
         try {
             String mensaje = jTextAreaMensaje.getText();
@@ -221,7 +211,30 @@ public class GameWindow extends javax.swing.JFrame
             System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
         }
     }//GEN-LAST:event_jTabbedPane1KeyReleased
-    
+
+    private void jTabbedPane1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane1KeyPressed
+        Person[] usuarios = this.panel.keyPressed(evt);
+        if (usuarios != null) {
+            Person p1 = usuarios[0];
+            Person p2 = usuarios[1];
+            try {
+                this.cliente.iniciarPPT(p1.getIdentificador(), p2.getIdentificador());
+            } catch (JSONException ex) {
+                System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
+            } catch (IOException ex) {
+                System.out.println(">>ERROR ENVIANDO MENSAJE");
+            }
+        }
+
+        try {
+            this.cliente.moverUsuario(this.mundo.getPerson().getIdentificador(), this.mundo.getPerson().getX(), this.mundo.getPerson().getY());
+        } catch (JSONException ex) {
+            System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
+        } catch (IOException ex) {
+            System.out.println(">>ERROR ENVIANDO MENSAJE");
+        }
+    }//GEN-LAST:event_jTabbedPane1KeyPressed
+
     public void iniciarMundo(Mundo mundo, int xP, int yP, int wP, int hP) {
         this.iniciar(xP, yP, wP, hP);
         this.mundo = mundo;
@@ -317,7 +330,7 @@ public class GameWindow extends javax.swing.JFrame
             try {
                 JSONObject receivedJson = new JSONObject(mensaje);
                 this.mundo.findPersonById(receivedJson.getInt("identificador"), receivedJson.getInt("x"), receivedJson.getInt("y"));
-                
+
             } catch (JSONException ex) {
                 System.out.println(">>Error obteniendo la informacion");
             }
@@ -325,6 +338,39 @@ public class GameWindow extends javax.swing.JFrame
 
         }
     }
+
+    @Override
+    public void nuevoPPT(String mensaje, int idNotificable) {
+        if (idNotificable == 1) {
+        } else if (idNotificable == 2) {
+            try {
+                Home home = new Home(this, true);
+                JSONObject receivedJson = new JSONObject(mensaje);
+                String nombreOponente = "";
+                int identificadorOponente = 0;
+                if (receivedJson.getInt("id_jugador1") != this.mundo.getPerson().getIdentificador()) {
+                    nombreOponente = receivedJson.getString("nombre_jugador1");
+                    identificadorOponente = receivedJson.getInt("id_jugador1");
+                } else {
+                    nombreOponente = receivedJson.getString("nombre_jugador2");
+                    identificadorOponente = receivedJson.getInt("id_jugador2");
+                }
+
+                home.setNombreOponente(nombreOponente);
+                home.setIdentificadorOponente(identificadorOponente);
+
+                home.setCliente(this.cliente);
+                home.setIdentificadorCliente(this.mundo.getPerson().getIdentificador());
+
+                home.setIdentificadorSala(receivedJson.getInt("id_sala"));
+
+                home.setVisible(true);
+            } catch (JSONException ex) {
+                System.out.println(">>Error obteniendo la informacion");
+            }
+        }
+    }
+
 
 //    @Override
 //    public void deshabilitarJuego(String mensaje) {

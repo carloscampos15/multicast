@@ -15,6 +15,7 @@ public interface Notificable {
     public void nuevoUsuario(String mensaje, int idNotificable);
     public void nuevoMensaje(String mensaje, int idNotificable);
     public void moverJugador(String mensaje, int idNotificable);
+    public void nuevoPPT(String mensaje, int idNotificable);
 //    public void deshabilitarJuego(String mensaje);
 //    public void habilitarJuego(String mensaje);
 //    public void jugar(JSONObject receivedJson);

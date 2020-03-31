@@ -62,19 +62,29 @@ public class Mundo extends SpriteContainer {
         return null;
     }
 
-    private void processMushroomsEaten() {
+    private Person[] processMushroomsEaten() {
+        for(Sprite sprite : sprites){
+            if(this.person.checkCollision(sprite) && sprite != this.person){
+                Person[] usuarios = new Person[2];
+                usuarios[0] = this.person;
+                usuarios[1] = (Person) sprite;
+                return usuarios;
+            }
+        }
+        return null;
         //se proceso si se toca con otra persona que comience el juego
     }
 
-    public void keyPressed(int code) {
+    public Person[] keyPressed(int code) {
         if (code == KeyEvent.VK_W
                 | code == KeyEvent.VK_S
                 | code == KeyEvent.VK_A
                 | code == KeyEvent.VK_D) {
             if (person.move(code)) {
-                processMushroomsEaten();
+                return processMushroomsEaten();
             }
         }
+        return null;
     }
 
     @Override

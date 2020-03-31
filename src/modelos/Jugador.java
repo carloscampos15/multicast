@@ -32,12 +32,18 @@ public class Jugador implements Runnable {
     private DataOutputStream salida;
     private ControladorJuego controladorJuego;
     private int identificador;
+    private String accion;
+
+    public static final String PIEDRA = "PIEDRA";
+    public static final String PAPEL = "PAPEL";
+    public static final String TIJERAS = "TIJERAS";
 
     public Jugador(Socket clientSocket, ControladorJuego controladorJuego) throws IOException {
         this.clientSocket = clientSocket;
         this.entrada = new DataInputStream(clientSocket.getInputStream());
         this.salida = new DataOutputStream(clientSocket.getOutputStream());
         this.controladorJuego = controladorJuego;
+        this.accion = "";
     }
 
     public int getIdentificador() {
@@ -54,6 +60,14 @@ public class Jugador implements Runnable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
     }
 
     public ControladorJuego getControladorJuego() {
@@ -120,6 +134,29 @@ public class Jugador implements Runnable {
         return true;
     }
 
+    private boolean notificarJugadoresSala(SalaPPT sala) throws JSONException, IOException {
+        Jugador[] players = sala.getJugadores();
+        JSONObject sendJson = new JSONObject();
+        sendJson.put("accion", Interaccion.NUEVO_PPT);
+        sendJson.put("id_jugador1", players[0].getIdentificador());
+        sendJson.put("nombre_jugador1", players[0].getNombre());
+        sendJson.put("id_jugador2", players[1].getIdentificador());
+        sendJson.put("nombre_jugador2", players[1].getNombre());
+        sendJson.put("id_sala", sala.getIdentificador_sala());
+        for (Jugador jugador : players) {
+            jugador.salida.writeUTF(sendJson.toString());
+        }
+        return true;
+    }
+
+    private boolean notificarGanadorBySala(SalaPPT sala, JSONObject response) throws IOException {
+        Jugador[] players = sala.getJugadores();
+        for (Jugador jugador : players) {
+            jugador.salida.writeUTF(response.toString());
+        }
+        return true;
+    }
+
     @Override
     public void run() {
         while (true) {
@@ -137,6 +174,18 @@ public class Jugador implements Runnable {
                         case Interaccion.MOVER_CLIENTE:
                             this.controladorJuego.setPosicionJugador(receivedJson.getInt("identificador"), receivedJson.getInt("x"), receivedJson.getInt("y"));
                             break;
+                        case Interaccion.NUEVO_PPT:
+                            SalaPPT sala = this.controladorJuego.crearSalaPPT(receivedJson.getInt("jugador1"), receivedJson.getInt("jugador2"));
+                            this.notificarJugadoresSala(sala);
+                            break;
+                        case Interaccion.JUEGO_PPT:
+                            JSONObject response = this.controladorJuego.calcularGanador(receivedJson.getInt("identificador"), receivedJson.getInt("identificador_sala"), receivedJson.getString("juego_accion"));
+                            SalaPPT misala = this.controladorJuego.getSalaById(receivedJson.getInt("identificador_sala"));
+                            if (response != null) {
+                                notificarGanadorBySala(misala, response);
+                            }
+                            break;
+
                     }
                 } catch (JSONException ex) {
                     System.out.println("<<Error tranformando datos a json");

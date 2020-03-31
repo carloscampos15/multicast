@@ -5,11 +5,12 @@
  */
 package controladores;
 
-import game.Person;
-import gamebase.Sprite;
 import java.awt.Point;
 import java.util.ArrayList;
 import modelos.Jugador;
+import modelos.SalaPPT;
+import org.json.JSONException;
+import org.json.JSONObject;
 import servidor.Interaccion;
 
 /**
@@ -21,9 +22,11 @@ import servidor.Interaccion;
 public class ControladorJuego {
 
     private ArrayList<Jugador> jugadores;
+    private ArrayList<SalaPPT> salas;
 
     public ControladorJuego(ArrayList<Jugador> jugadores) {
         this.jugadores = jugadores;
+        this.salas = new ArrayList<>();
     }
 
     /**
@@ -81,5 +84,38 @@ public class ControladorJuego {
             }
         }
         return false;
+    }
+    
+    public Jugador getJugadorById(int identificador){
+        for(Jugador jugador : jugadores){
+            if(jugador.getIdentificador() == identificador){
+                return jugador;
+            }
+        }
+        return null;
+    }
+    
+    public SalaPPT crearSalaPPT(int id_jugador1, int id_jugador2){
+        Jugador[] players = new Jugador[2];
+        players[0] = getJugadorById(id_jugador1);
+        players[1] = getJugadorById(id_jugador2);
+        SalaPPT sala = new SalaPPT(players);
+        sala.setIdentificador_sala(salas.size()+1);
+        salas.add(sala);
+        return sala;
+    }
+    
+    public SalaPPT getSalaById(int identificador_sala){
+        for(SalaPPT sala : salas){
+            if(sala.getIdentificador_sala() == identificador_sala){
+                return sala;
+            }
+        }
+        return null;
+    }
+    
+    public JSONObject calcularGanador(int identificador, int identificador_sala, String accion) throws JSONException{
+        SalaPPT sala = getSalaById(identificador_sala);
+        return sala.calcularGanador(identificador, accion);
     }
 }

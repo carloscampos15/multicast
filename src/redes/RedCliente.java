@@ -7,8 +7,10 @@ package redes;
 
 import cliente.Cliente;
 import cliente.MensajeEntradaMC;
+import cliente.MensajeEntradaPPT;
 import cliente.MensajeEntradaTCP;
 import cliente.Notificable;
+import cliente.NotificablePPT;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -39,6 +41,10 @@ public class RedCliente {
     private DataInputStream entrada;
     private DataOutputStream salida;
 
+    private MensajeEntradaMC readMessageMC;
+    private MensajeEntradaTCP readMessageTCP;
+    private MensajeEntradaPPT readMessagePPT;
+
     public RedCliente(String tcp_ip, String grupo, int puerto, Cliente cliente) throws UnknownHostException, IOException {
         this.grupo = InetAddress.getByName(grupo);
         this.puerto = puerto;
@@ -63,11 +69,21 @@ public class RedCliente {
         this.notificable = notificable;
     }
 
+    public void setNotificablePPT(NotificablePPT notificable) {
+        readMessagePPT = new MensajeEntradaPPT(notificable, entrada);
+        readMessagePPT.start();
+    }
+    
+    public void terminarJuegoPPT(){
+        readMessagePPT.setIsAlive(false);
+        readMessagePPT = null;
+    }
+
     public void ejecutar() {
-        MensajeEntradaMC readMessageMC = new MensajeEntradaMC(notificable, socket);
+        readMessageMC = new MensajeEntradaMC(notificable, socket);
         readMessageMC.start();
 
-        MensajeEntradaTCP readMessageTCP = new MensajeEntradaTCP(notificable, entrada);
+        readMessageTCP = new MensajeEntradaTCP(notificable, entrada);
         readMessageTCP.start();
 
 //        BufferedReader myinput = new BufferedReader(new InputStreamReader(System.in));
@@ -184,6 +200,39 @@ public class RedCliente {
         sendJson.put("identificador", identificador);
         sendJson.put("x", x);
         sendJson.put("y", y);
+
+        //enviar al tcp servidor
+        salida.writeUTF(sendJson.toString());
+        salida.flush();
+
+        return true;
+    }
+
+    public boolean iniciarPPT(int identificador1, int identificador2) throws JSONException, IOException {
+
+        byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+        JSONObject sendJson = new JSONObject();
+
+        sendJson.put("accion", Interaccion.NUEVO_PPT);
+        sendJson.put("jugador1", identificador1);
+        sendJson.put("jugador2", identificador2);
+
+        //enviar al tcp servidor
+        salida.writeUTF(sendJson.toString());
+        salida.flush();
+
+        return true;
+    }
+
+    public boolean jugarPPT(int identificador, int identificadorSala, String juegoAccion) throws JSONException, IOException {
+
+        byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+        JSONObject sendJson = new JSONObject();
+
+        sendJson.put("accion", Interaccion.JUEGO_PPT);
+        sendJson.put("identificador", identificador);
+        sendJson.put("identificador_sala", identificadorSala);
+        sendJson.put("juego_accion", juegoAccion);
 
         //enviar al tcp servidor
         salida.writeUTF(sendJson.toString());

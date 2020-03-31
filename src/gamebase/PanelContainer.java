@@ -6,6 +6,7 @@
 package gamebase;
 
 import game.Mundo;
+import game.Person;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -36,7 +37,7 @@ public class PanelContainer extends JPanel implements GraphicContainer {
         this.mundo = mundo;
     }
 
-    public void keyPressed(java.awt.event.KeyEvent evt) {
+    public Person[] keyPressed(java.awt.event.KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_Q) {
             System.exit(0);
         }
@@ -45,12 +46,10 @@ public class PanelContainer extends JPanel implements GraphicContainer {
                 | evt.getKeyCode() == KeyEvent.VK_S
                 | evt.getKeyCode() == KeyEvent.VK_A
                 | evt.getKeyCode() == KeyEvent.VK_D) {
-            mundo.keyPressed(evt.getKeyCode());
+            return mundo.keyPressed(evt.getKeyCode());
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_G) {
-            mundo.keyPressed(evt.getKeyCode());
-        }
+        return null;
     }
 
     @Override

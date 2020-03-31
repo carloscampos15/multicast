@@ -17,6 +17,9 @@ public class Interaccion {
     public static final int SALIDA_CLIENTE = 3;
     public static final int MOVER_CLIENTE = 4;
     public static final int NUEVO_MENSAJE = 5;
+    public static final int NUEVO_PPT = 6;
+    public static final int JUEGO_PPT = 7;
+    public static final int GANADOR_PPT = 8;
     public static final int PUERTO = 9090;
     
     public static final int WIDTH_MAP = 1000;
