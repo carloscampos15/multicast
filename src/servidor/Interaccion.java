@@ -12,8 +12,10 @@ package servidor;
 public class Interaccion {
 
     public static final int NUEVO_CLIENTE = 1;
-    public static final int SALIDA_CLIENTE = 2;
-    public static final int MOVER_CLIENTE = 3;
+    public static final int SESION_NUEVO_CLIENTE = 2;
+    public static final int SALIDA_CLIENTE = 3;
+    public static final int MOVER_CLIENTE = 4;
+    public static final int NUEVO_MENSAJE = 5;
     public static final int PUERTO = 9090;
     
     public static final int WIDTH_MAP = 1000;

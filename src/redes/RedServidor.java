@@ -21,7 +21,7 @@ public class RedServidor {
 
     private int puerto;
     private Juego juego;
-    private static ArrayList<Jugador> jugadores;
+    public static ArrayList<Jugador> jugadores;
     private ServerSocket listenSocket;
     private ControladorJuego controladorJuego;
 
@@ -45,6 +45,7 @@ public class RedServidor {
                 Socket clientSocket = listenSocket.accept();
                 System.out.println("<<Cliente recibido");
                 Jugador jugador = new Jugador(clientSocket, this.controladorJuego);
+                jugador.setIdentificador(jugadores.size()+1);
                 this.jugadores = controladorJuego.agregarJugadorMapa(jugador);
             } catch (IOException ex) {
                 System.out.println("<<Error al conectar cliente");

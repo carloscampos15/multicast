@@ -19,11 +19,13 @@ public class Person extends Sprite {
     public static final int INITIAL_WIDTH = 50;
     public static final int INITIAL_HEIGHT = 50;
     public static final int GROW_SIZE = 4;
+    protected int identificador;
 
     protected int step = 5;
 
-    public Person(int x, int y, int height, int width) {
+    public Person(int x, int y, int height, int width, int identificador) {
         super(x, y, height, width);
+        this.identificador = identificador;
         setColor(Color.MAGENTA);
     }
 

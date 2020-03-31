@@ -22,43 +22,29 @@ public class Mundo extends SpriteContainer {
 
     public Mundo(int x, int y, int height, int width) {
         super(x, y, height, width);
-        person = new Person((width - Person.INITIAL_WIDTH) / 2,
-                (height - Person.INITIAL_HEIGHT) / 2,
-                Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT);
-        person.setGraphicContainer(this);
         this.setColor(Color.CYAN);
     }
 
-    private void addPerson() {
-        boolean state = true;
-        while (state) {
-            int random1 = (int) (Math.random() * this.width) + 1;
-            int random2 = (int) (Math.random() * this.height) + 1;
-
-            person = new Person(random1, random2, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT);
-
-            if (!validateCreatePerson(person)) {
-                person.setGraphicContainer(this);
-                sprites.add(person);
-                state = false;
-            }
-        }
-
+    public Person getPerson() {
+        return person;
     }
 
-    private boolean validateCreatePerson(Person person) {
-        for (Sprite sprite : sprites) {
-            if (sprite.checkCollision(person)) {
-                return true;
-            }
-        }
-        if (person.getX() >= 0
-                & person.getY() >= 0
-                & person.getX() + person.getWidth() <= this.getWidth()
-                & person.getY() + person.getHeight() <= this.getHeight()) {
-            return false;
-        }
-        return true;
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public void createPerson(int x, int y, int identificador) {
+        this.person = new Person(x, y, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT, identificador);
+        sprites.add(person);
+        person.setGraphicContainer(this);
+        refresh();
+    }
+
+    public void createPersonSesion(int x, int y, int identificador) {
+        Person person = new Person(x, y, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT, identificador);
+        sprites.add(person);
+        person.setGraphicContainer(this);
+        refresh();
     }
 
     private void processMushroomsEaten() {
@@ -73,11 +59,6 @@ public class Mundo extends SpriteContainer {
             if (person.move(code)) {
                 processMushroomsEaten();
             }
-        }
-
-        if (code == KeyEvent.VK_G) {
-            addPerson();
-            refresh();
         }
     }
 

@@ -5,15 +5,15 @@
  */
 package cliente;
 
-import org.json.JSONObject;
-
 /**
  * Interfaz que conecta la interzas con el cliente
  * @author Karen Castaño Orjuela Castaño
  * @author Carlos Alberto Campos Armero
  */
 public interface Notificable { 
-    public void login(String mensaje);
+    public void login(String mensaje, int idNotificable);
+    public void nuevoUsuario(String mensaje, int idNotificable);
+    public void nuevoMensaje(String mensaje, int idNotificable);
 //    public void deshabilitarJuego(String mensaje);
 //    public void habilitarJuego(String mensaje);
 //    public void jugar(JSONObject receivedJson);

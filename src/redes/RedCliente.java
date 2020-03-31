@@ -134,4 +134,27 @@ public class RedCliente {
 
         return true;
     }
+    
+    /**
+     * Asigna el respectivo nombre al cliente
+     *
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    public boolean enviarMensaje(String mensaje) throws IOException, JSONException {
+        //data en formato json
+        byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+        JSONObject sendJson = new JSONObject();
+        sendJson.put("accion", Interaccion.NUEVO_MENSAJE);
+        sendJson.put("nombre_usuario", this.cliente.getNombre());
+        sendJson.put("mensaje", mensaje);
+
+        //enviar al multicast
+        byte[] hoja = new String(sendJson.toString()).getBytes();
+        DatagramPacket dp = new DatagramPacket(hoja, hoja.length, this.grupo, this.puerto);
+        socket.send(dp);
+
+        return true;
+    }
 }

@@ -41,6 +41,11 @@ public class Cliente {
         this.redCliente.updateNameUser(name);
         return true;
     }
+    
+    public boolean enviarMensaje(String mensaje) throws IOException, JSONException {
+        this.redCliente.enviarMensaje(mensaje);
+        return true;
+    }
 
 //    public static void main(String[] args) {
 //        try {

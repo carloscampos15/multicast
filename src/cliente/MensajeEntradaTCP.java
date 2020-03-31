@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
+import servidor.Interaccion;
 
 /**
  *
@@ -32,7 +33,20 @@ public class MensajeEntradaTCP extends Thread {
             try {
                 String msg = entrada.readUTF();
                 JSONObject receivedJson = new JSONObject(msg);
-                System.out.println(receivedJson);
+
+                switch (receivedJson.getInt("accion")) {
+                    case Interaccion.NUEVO_CLIENTE:
+                        this.notificable.login(receivedJson.toString(), 2);
+                        break;
+                    case Interaccion.SESION_NUEVO_CLIENTE:
+                        this.notificable.nuevoUsuario(receivedJson.toString(), 2);
+                        break;
+                    case Interaccion.SALIDA_CLIENTE:
+                        isAlive = false;
+                        break;
+                    case Interaccion.MOVER_CLIENTE:
+                        break;
+                }
             } catch (IOException e) {
                 System.out.println(">>ERROR AL RECIBIR DATOS");
             } catch (JSONException ex) {

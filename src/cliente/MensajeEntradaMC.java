@@ -28,10 +28,16 @@ public class MensajeEntradaMC extends Thread {
                 multicastSocket.receive(dp);
                 byte[] data = dp.getData();
                 JSONObject receiveMessage = new JSONObject(new String(data));
-                              
+
                 switch (receiveMessage.getInt("accion")) {
                     case Interaccion.NUEVO_CLIENTE:
-                        this.notificable.login(receiveMessage.getString("nombre_usuario")+": ha iniciado sesión");
+                        this.notificable.login(receiveMessage.getString("nombre_usuario") + ": ha iniciado sesión", 1);
+                        break;
+                    case Interaccion.SESION_NUEVO_CLIENTE:
+                        this.notificable.nuevoUsuario(receiveMessage.toString(), 1);
+                        break;
+                    case Interaccion.NUEVO_MENSAJE:
+                        this.notificable.nuevoMensaje(receiveMessage.toString(), 1);
                         break;
                     case Interaccion.SALIDA_CLIENTE:
                         isAlive = false;

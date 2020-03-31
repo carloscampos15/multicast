@@ -13,19 +13,21 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
  * @author DSO
  */
 public class GameWindow extends javax.swing.JFrame
-                        implements GraphicContainer, cliente.Notificable{
+        implements GraphicContainer, cliente.Notificable {
 
     protected Mundo mundo;
     protected PanelContainer panel;
     protected Cliente cliente;
-    
+
     /**
      * Creates new form MundoView
      */
@@ -36,7 +38,7 @@ public class GameWindow extends javax.swing.JFrame
         this.cliente = cliente;
         this.cliente.setNotificableRed(this);
         this.cliente.ejecutarCliente();
-        
+
         try {
             this.cliente.updateName(cliente.getNombre());
         } catch (IOException ex) {
@@ -46,8 +48,8 @@ public class GameWindow extends javax.swing.JFrame
         }
     }
 
-    public void iniciar(int xPanel, int yPanel,int wPanel,int hPanel){
-        this.panel = new PanelContainer(this,contenedor);
+    public void iniciar(int xPanel, int yPanel, int wPanel, int hPanel) {
+        this.panel = new PanelContainer(this, contenedor);
         this.panel.setBounds(xPanel, yPanel, wPanel, hPanel);
         this.contenedor.add(panel);
     }
@@ -55,7 +57,7 @@ public class GameWindow extends javax.swing.JFrame
     public PanelContainer getPanel() {
         return panel;
     }
-   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,7 +73,7 @@ public class GameWindow extends javax.swing.JFrame
         jTextAreaChat = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaMensaje = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        jButtonEnviar = new javax.swing.JButton();
         contenedor = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -103,7 +105,12 @@ public class GameWindow extends javax.swing.JFrame
         jTextAreaMensaje.setRows(5);
         jScrollPane3.setViewportView(jTextAreaMensaje);
 
-        jButton1.setText("Enviar mensaje");
+        jButtonEnviar.setText("Enviar mensaje");
+        jButtonEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEnviarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -111,7 +118,7 @@ public class GameWindow extends javax.swing.JFrame
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonEnviar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTabbedPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
@@ -123,7 +130,7 @@ public class GameWindow extends javax.swing.JFrame
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButtonEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
@@ -188,7 +195,7 @@ public class GameWindow extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        
+
     }//GEN-LAST:event_formKeyPressed
 
     private void jTabbedPane1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane1KeyPressed
@@ -196,10 +203,24 @@ public class GameWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jTabbedPane1KeyPressed
 
     private void jTabbedPane2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane2KeyPressed
-        
+
     }//GEN-LAST:event_jTabbedPane2KeyPressed
 
-    public void iniciarMundo(Mundo mundo,int xP,int yP,int wP,int hP) {
+    private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
+        try {
+            String mensaje = jTextAreaMensaje.getText();
+
+            this.cliente.enviarMensaje(mensaje);
+
+            jTextAreaMensaje.setText("");
+        } catch (IOException ex) {
+            System.out.println(">>ERROR ENVIANDO MENSAJE");
+        } catch (JSONException ex) {
+            System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
+        }
+    }//GEN-LAST:event_jButtonEnviarActionPerformed
+
+    public void iniciarMundo(Mundo mundo, int xP, int yP, int wP, int hP) {
         this.iniciar(xP, yP, wP, hP);
         this.mundo = mundo;
         this.panel.setMundo(mundo);
@@ -215,11 +236,11 @@ public class GameWindow extends javax.swing.JFrame
     public Rectangle getBoundaries() {
         return this.getBounds();
     }
-      
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contenedor;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonEnviar;
     private javax.swing.JList<String> jListPosiciones;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -233,10 +254,66 @@ public class GameWindow extends javax.swing.JFrame
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void login(String mensaje) {
-        String chat = jTextAreaChat.getText();
-        String val = chat.equals("")?"":"\n";
-        jTextAreaChat.setText(chat + val + mensaje);
+    public void login(String mensaje, int idNotificable) {
+        if (idNotificable == 1) {
+            String chat = jTextAreaChat.getText();
+            String val = chat.equals("") ? "" : "\n";
+            jTextAreaChat.setText(chat + val + mensaje);
+        } else if (idNotificable == 2) {
+            try {
+                JSONObject receivedJson = new JSONObject(mensaje);
+                JSONObject posicion = new JSONObject(receivedJson.getString("posicion"));
+                this.mundo.createPerson(posicion.getInt("x"), posicion.getInt("y"), receivedJson.getInt("identificador"));
+                System.out.println(receivedJson.toString());
+            } catch (JSONException ex) {
+                System.out.println(">>Error obteniendo la informacion");
+            }
+        }
+    }
+
+    @Override
+    public void nuevoUsuario(String mensaje, int idNotificable) {
+        if (idNotificable == 1) {
+
+        } else if (idNotificable == 2) {
+            try {
+                JSONObject receivedJson = new JSONObject(mensaje);
+                if (receivedJson.has("usuarios")) {
+                    JSONArray usuarios = receivedJson.getJSONArray("usuarios");
+                    for (int i = 0; i < usuarios.length(); i++) {
+                        JSONObject obj = usuarios.getJSONObject(i);
+                        this.mundo.createPersonSesion(obj.getInt("x"), obj.getInt("y"), obj.getInt("identificador"));
+                        System.out.println(obj.toString());
+                    }
+                } else {
+                    JSONObject posiciones = new JSONObject(receivedJson.getString("posicion"));
+                    this.mundo.createPersonSesion(posiciones.getInt("x"), posiciones.getInt("y"), receivedJson.getInt("identificador"));
+                    System.out.println(receivedJson.toString());
+                }
+            } catch (JSONException ex) {
+                System.out.println(">>Error obteniendo la informacion");
+            }
+        }
+    }
+
+    @Override
+    public void nuevoMensaje(String mensaje, int idNotificable) {
+        if (idNotificable == 1) {
+            try {
+                JSONObject receivedJson = new JSONObject(mensaje);
+                
+                String chat = jTextAreaChat.getText();
+                
+                String val = chat.equals("") ? "" : "\n";
+                
+                jTextAreaChat.setText(chat + val + receivedJson.getString("nombre_usuario") + ": " + receivedJson.getString("mensaje"));
+                
+            } catch (JSONException ex) {
+                System.out.println(">>Error obteniendo la informacion");
+            }
+        } else if (idNotificable == 2) {
+
+        }
     }
 
 //    @Override
