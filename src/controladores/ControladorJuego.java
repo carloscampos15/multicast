@@ -25,14 +25,17 @@ public class ControladorJuego {
     public ControladorJuego(ArrayList<Jugador> jugadores) {
         this.jugadores = jugadores;
     }
+
     /**
-     * Agrega un jugador en una posicion aleatoria teniendo en cuenta que no aparezca tocando a otro jugador
+     * Agrega un jugador en una posicion aleatoria teniendo en cuenta que no
+     * aparezca tocando a otro jugador
+     *
      * @param jugador
-     * @return 
+     * @return
      */
     public ArrayList<Jugador> agregarJugadorMapa(Jugador jugador) {
         boolean state = true;
-        
+
         while (state) {
             int random1 = (int) (Math.random() * Interaccion.WIDTH_MAP) + 1;
             int random2 = (int) (Math.random() * Interaccion.HEIGHT_MAP) + 1;
@@ -42,20 +45,21 @@ public class ControladorJuego {
                 state = false;
             }
         }
-        
+
         Thread t = new Thread(jugador);
         t.start();
         return this.jugadores;
     }
-    
+
     /**
      * Valida que la posicion del nuevo jugador este vacia
+     *
      * @param jugador
-     * @return 
+     * @return
      */
-    private boolean validarPosicionNueva(Jugador jugador){
-        for(Jugador jugadore:jugadores){
-            if(jugadore.verificarColision(jugador)){
+    private boolean validarPosicionNueva(Jugador jugador) {
+        for (Jugador jugadore : jugadores) {
+            if (jugadore.verificarColision(jugador)) {
                 return true;
             }
         }
@@ -66,5 +70,16 @@ public class ControladorJuego {
             return false;
         }
         return true;
+    }
+
+    public boolean setPosicionJugador(int identificador, int x, int y) {
+        
+        for (Jugador jugador : jugadores) {
+            if(jugador.getIdentificador() == identificador){
+                jugador.setPosicion(new Point(x, y));
+                return true;
+            }
+        }
+        return false;
     }
 }

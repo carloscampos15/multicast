@@ -5,7 +5,6 @@
  */
 package cliente;
 
-import java.awt.Point;
 import java.io.IOException;
 import org.json.JSONException;
 import redes.RedCliente;
@@ -43,18 +42,29 @@ public class Cliente {
         this.redCliente.updateNameUser(name);
         return true;
     }
-    
+
     public boolean enviarMensaje(String mensaje) throws IOException, JSONException {
         this.redCliente.enviarMensaje(mensaje);
         return true;
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            Cliente cliente = new Cliente("NOMBRE USUARIO");
-//            cliente.ejecutarCliente();
-//        } catch (IOException ex) {
-//            System.out.println(">>ERROR INCIIANDO CLIENTE");
-//        }
-//    }
+    public boolean moverUsuario(int identificador, int x, int y) throws JSONException, IOException {
+        this.redCliente.moverUsuario(this.getNombre(), identificador, x, y);
+        return true;
+    }
+    
+    public boolean setPosicion(int identificador, int x, int y) throws JSONException, IOException {
+        this.redCliente.setPosicion(this.getNombre(), identificador, x, y);
+        return true;
+    }
+    
+    //    public static void main(String[] args) {
+    //        try {
+    //            Cliente cliente = new Cliente("NOMBRE USUARIO");
+    //            cliente.ejecutarCliente();
+    //        } catch (IOException ex) {
+    //            System.out.println(">>ERROR INCIIANDO CLIENTE");
+    //        }
+    //    }
+
 }

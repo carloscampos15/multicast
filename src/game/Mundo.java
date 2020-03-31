@@ -35,18 +35,31 @@ public class Mundo extends SpriteContainer {
         this.person = person;
     }
 
-    public void createPerson(int x, int y, int identificador) {
-        this.person = new Person(x, y, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT, identificador);
+    public void createPerson(int x, int y, int identificador, String nombre) {
+        this.person = new Person(x, y, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT, identificador, nombre);
         sprites.add(person);
         person.setGraphicContainer(this);
         refresh();
     }
 
-    public void createPersonSesion(int x, int y, int identificador) {
-        Person person = new Person(x, y, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT, identificador);
+    public void createPersonSesion(int x, int y, int identificador, String nombre) {
+        Person person = new Person(x, y, Person.INITIAL_WIDTH, Person.INITIAL_HEIGHT, identificador, nombre);
         sprites.add(person);
         person.setGraphicContainer(this);
         refresh();
+    }
+    
+    public Person findPersonById(int identificador, int x, int y){
+        for(Sprite sprite : sprites){
+            Person person = (Person) sprite;
+            if(person.getIdentificador() == identificador){
+                person.setX(x);
+                person.setY(y);
+                refresh();
+                return person;
+            }
+        }
+        return null;
     }
 
     private void processMushroomsEaten() {

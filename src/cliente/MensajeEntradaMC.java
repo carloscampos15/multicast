@@ -49,6 +49,7 @@ public class MensajeEntradaMC extends Thread {
                         isAlive = false;
                         break;
                     case Interaccion.MOVER_CLIENTE:
+                        this.notificable.moverJugador(receiveMessage.toString(), 1);
                         break;
                 }
             } catch (IOException ex) {

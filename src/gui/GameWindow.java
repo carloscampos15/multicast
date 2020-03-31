@@ -11,8 +11,6 @@ import gamebase.GraphicContainer;
 import gamebase.PanelContainer;
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,17 +82,6 @@ public class GameWindow extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-        });
-
-        jTabbedPane2.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTabbedPane2KeyPressed(evt);
-            }
-        });
 
         jTextAreaChat.setEditable(false);
         jTextAreaChat.setColumns(20);
@@ -150,6 +137,9 @@ public class GameWindow extends javax.swing.JFrame
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTabbedPane1KeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTabbedPane1KeyReleased(evt);
+            }
         });
 
         jScrollPane1.setViewportView(jListPosiciones);
@@ -196,17 +186,17 @@ public class GameWindow extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-
-    }//GEN-LAST:event_formKeyPressed
-
     private void jTabbedPane1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane1KeyPressed
         this.panel.keyPressed(evt);
+
+        try {
+            this.cliente.moverUsuario(this.mundo.getPerson().getIdentificador(), this.mundo.getPerson().getX(), this.mundo.getPerson().getY());
+        } catch (JSONException ex) {
+            System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
+        } catch (IOException ex) {
+            System.out.println(">>ERROR ENVIANDO MENSAJE");
+        }
     }//GEN-LAST:event_jTabbedPane1KeyPressed
-
-    private void jTabbedPane2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane2KeyPressed
-
-    }//GEN-LAST:event_jTabbedPane2KeyPressed
 
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
         try {
@@ -222,6 +212,16 @@ public class GameWindow extends javax.swing.JFrame
         }
     }//GEN-LAST:event_jButtonEnviarActionPerformed
 
+    private void jTabbedPane1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane1KeyReleased
+        try {
+            this.cliente.setPosicion(this.mundo.getPerson().getIdentificador(), this.mundo.getPerson().getX(), this.mundo.getPerson().getY());
+        } catch (IOException ex) {
+            System.out.println(">>ERROR CREANDO CLIENTE");
+        } catch (JSONException ex) {
+            System.out.println(">>ERROR CREANDO JSON CON LA INFORMACION DEL CLIENTE");
+        }
+    }//GEN-LAST:event_jTabbedPane1KeyReleased
+    
     public void iniciarMundo(Mundo mundo, int xP, int yP, int wP, int hP) {
         this.iniciar(xP, yP, wP, hP);
         this.mundo = mundo;
@@ -265,8 +265,7 @@ public class GameWindow extends javax.swing.JFrame
             try {
                 JSONObject receivedJson = new JSONObject(mensaje);
                 JSONObject posicion = new JSONObject(receivedJson.getString("posicion"));
-                this.mundo.createPerson(posicion.getInt("x"), posicion.getInt("y"), receivedJson.getInt("identificador"));
-                System.out.println(receivedJson.toString());
+                this.mundo.createPerson(posicion.getInt("x"), posicion.getInt("y"), receivedJson.getInt("identificador"), receivedJson.getString("nombre_usuario"));
             } catch (JSONException ex) {
                 System.out.println(">>Error obteniendo la informacion");
             }
@@ -284,13 +283,11 @@ public class GameWindow extends javax.swing.JFrame
                     JSONArray usuarios = receivedJson.getJSONArray("usuarios");
                     for (int i = 0; i < usuarios.length(); i++) {
                         JSONObject obj = usuarios.getJSONObject(i);
-                        this.mundo.createPersonSesion(obj.getInt("x"), obj.getInt("y"), obj.getInt("identificador"));
-                        System.out.println(obj.toString());
+                        this.mundo.createPersonSesion(obj.getInt("x"), obj.getInt("y"), obj.getInt("identificador"), obj.getString("nombre_usuario"));
                     }
                 } else {
                     JSONObject posiciones = new JSONObject(receivedJson.getString("posicion"));
-                    this.mundo.createPersonSesion(posiciones.getInt("x"), posiciones.getInt("y"), receivedJson.getInt("identificador"));
-                    System.out.println(receivedJson.toString());
+                    this.mundo.createPersonSesion(posiciones.getInt("x"), posiciones.getInt("y"), receivedJson.getInt("identificador"), receivedJson.getString("nombre_usuario"));
                 }
             } catch (JSONException ex) {
                 System.out.println(">>Error obteniendo la informacion");
@@ -303,12 +300,23 @@ public class GameWindow extends javax.swing.JFrame
         if (idNotificable == 1) {
             try {
                 JSONObject receivedJson = new JSONObject(mensaje);
-                
                 String chat = jTextAreaChat.getText();
-                
                 String val = chat.equals("") ? "" : "\n";
-                
                 jTextAreaChat.setText(chat + val + receivedJson.getString("nombre_usuario") + ": " + receivedJson.getString("mensaje"));
+            } catch (JSONException ex) {
+                System.out.println(">>Error obteniendo la informacion");
+            }
+        } else if (idNotificable == 2) {
+
+        }
+    }
+
+    @Override
+    public void moverJugador(String mensaje, int idNotificable) {
+        if (idNotificable == 1) {
+            try {
+                JSONObject receivedJson = new JSONObject(mensaje);
+                this.mundo.findPersonById(receivedJson.getInt("identificador"), receivedJson.getInt("x"), receivedJson.getInt("y"));
                 
             } catch (JSONException ex) {
                 System.out.println(">>Error obteniendo la informacion");

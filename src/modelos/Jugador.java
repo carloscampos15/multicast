@@ -130,9 +130,12 @@ public class Jugador implements Runnable {
                     JSONObject receivedJson = new JSONObject(received);
 
                     switch (receivedJson.getInt("accion")) {
-                        case 1:
+                        case Interaccion.NUEVO_CLIENTE:
                             this.iniciarSesion(receivedJson.getString("nombre_usuario"));
                             this.notificarJugadores();
+                            break;
+                        case Interaccion.MOVER_CLIENTE:
+                            this.controladorJuego.setPosicionJugador(receivedJson.getInt("identificador"), receivedJson.getInt("x"), receivedJson.getInt("y"));
                             break;
                     }
                 } catch (JSONException ex) {

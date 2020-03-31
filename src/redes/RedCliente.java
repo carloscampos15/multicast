@@ -66,7 +66,7 @@ public class RedCliente {
     public void ejecutar() {
         MensajeEntradaMC readMessageMC = new MensajeEntradaMC(notificable, socket);
         readMessageMC.start();
-        
+
         MensajeEntradaTCP readMessageTCP = new MensajeEntradaTCP(notificable, entrada);
         readMessageTCP.start();
 
@@ -136,7 +136,7 @@ public class RedCliente {
 
         return true;
     }
-    
+
     /**
      * Asigna el respectivo nombre al cliente
      *
@@ -156,6 +156,38 @@ public class RedCliente {
         byte[] hoja = new String(sendJson.toString()).getBytes();
         DatagramPacket dp = new DatagramPacket(hoja, hoja.length, this.grupo, this.puerto);
         socket.send(dp);
+
+        return true;
+    }
+
+    public boolean moverUsuario(String nombre, int identificador, int x, int y) throws JSONException, IOException {
+        byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+        JSONObject sendJson = new JSONObject();
+        sendJson.put("accion", Interaccion.MOVER_CLIENTE);
+        sendJson.put("nombre_usuario", nombre);
+        sendJson.put("identificador", identificador);
+        sendJson.put("x", x);
+        sendJson.put("y", y);
+
+        byte[] hoja = new String(sendJson.toString()).getBytes();
+        DatagramPacket dp = new DatagramPacket(hoja, hoja.length, this.grupo, this.puerto);
+        socket.send(dp);
+
+        return true;
+    }
+
+    public boolean setPosicion(String nombre, int identificador, int x, int y) throws JSONException, IOException {
+        byte[] data = new byte[Interaccion.MAX_BUFFER_SIZE];
+        JSONObject sendJson = new JSONObject();
+        sendJson.put("accion", Interaccion.MOVER_CLIENTE);
+        sendJson.put("nombre_usuario", nombre);
+        sendJson.put("identificador", identificador);
+        sendJson.put("x", x);
+        sendJson.put("y", y);
+
+        //enviar al tcp servidor
+        salida.writeUTF(sendJson.toString());
+        salida.flush();
 
         return true;
     }

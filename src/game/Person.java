@@ -22,14 +22,21 @@ public class Person extends Sprite {
     public static final int INITIAL_HEIGHT = 50;
     public static final int GROW_SIZE = 4;
     protected int identificador;
+    protected String nombre;
 
     protected int step = 5;
 
-    public Person(int x, int y, int height, int width, int identificador) {
+    public Person(int x, int y, int height, int width, int identificador, String nombre) {
         super(x, y, height, width);
         this.identificador = identificador;
+        this.nombre = nombre;
         setColor(Color.MAGENTA);
     }
+
+    public int getIdentificador() {
+        return identificador;
+    }
+    
     /**
      * Es la que controla como se mueve la persona
      * @param direction
@@ -93,6 +100,8 @@ public class Person extends Sprite {
     public void paint(Graphics g) {
         g.setColor(color);
         g.fillRect(x, y, width, height);
+        g.setColor(Color.BLACK);
+        g.drawString(this.nombre, x, y+this.height/2);
     }
 
 }
