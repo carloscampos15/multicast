@@ -10,8 +10,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /**
+ * Es el encargado de tener lo necesario para poder graficar el cuadro (persona)
  *
- * @author educacion
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public abstract class Sprite {
 
@@ -33,6 +35,14 @@ public abstract class Sprite {
         return isOutOfGraphicContainer(x, y, width, height);
     }
 
+    /**
+     * Es el encargado de que el cuadrado no se salga de los limites
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @return 
+     */
     public boolean isOutOfGraphicContainer(int x, int y, int width, int height) {
         if (gameContainer == null) {
             return false;
@@ -44,7 +54,11 @@ public abstract class Sprite {
                 & x + width <= bounds.getX() + bounds.getWidth()
                 & y + height <= bounds.getY() + bounds.getHeight());
     }
-
+    /**
+     * Es el encargado de verificar si dos cuadrados colisionaron
+     * @param other
+     * @return 
+     */
     public boolean checkCollision(Sprite other) {
         // Collision x-axis?
         boolean collisionX = this.getX() + this.getWidth() >= other.getX()

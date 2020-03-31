@@ -6,8 +6,10 @@
 package gamebase;
 
 /**
+ * Es el encargado de que el cuadrado tenga no necesario para que se pueda mover
  *
- * @author educacion
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public abstract class SpriteMobile extends Sprite
 {

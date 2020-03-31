@@ -9,8 +9,9 @@ import java.io.IOException;
 import redes.RedServidor;
 
 /**
- *
- * @author carlo
+ * Es el encargado de iniciar los servicios 
+ * @author Karen Dayanna Castaño Orjuela
+ * @author Carlos Alberto Campos Armero
  */
 public class Servidor {
 

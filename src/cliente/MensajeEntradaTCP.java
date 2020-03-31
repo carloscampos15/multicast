@@ -12,8 +12,10 @@ import org.json.JSONObject;
 import servidor.Interaccion;
 
 /**
+ * Es el hilo encargado de estar siempre pendiente de recibir un mensaje (TCP)
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class MensajeEntradaTCP extends Thread {
 

@@ -13,8 +13,10 @@ import modelos.Jugador;
 import servidor.Interaccion;
 
 /**
+ * Es el encargado de agregar y validar la posicion del nuevo jugador
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class ControladorJuego {
 
@@ -23,7 +25,11 @@ public class ControladorJuego {
     public ControladorJuego(ArrayList<Jugador> jugadores) {
         this.jugadores = jugadores;
     }
-
+    /**
+     * Agrega un jugador en una posicion aleatoria teniendo en cuenta que no aparezca tocando a otro jugador
+     * @param jugador
+     * @return 
+     */
     public ArrayList<Jugador> agregarJugadorMapa(Jugador jugador) {
         boolean state = true;
         
@@ -42,6 +48,11 @@ public class ControladorJuego {
         return this.jugadores;
     }
     
+    /**
+     * Valida que la posicion del nuevo jugador este vacia
+     * @param jugador
+     * @return 
+     */
     private boolean validarPosicionNueva(Jugador jugador){
         for(Jugador jugadore:jugadores){
             if(jugadore.verificarColision(jugador)){

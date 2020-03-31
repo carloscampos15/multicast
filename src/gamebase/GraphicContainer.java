@@ -8,8 +8,10 @@ package gamebase;
 import java.awt.Rectangle;
 
 /**
+ * Se encarga de tener lo necesario para graficar
  *
- * @author educacion
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public interface GraphicContainer {
     public void refresh();

@@ -22,8 +22,10 @@ import org.json.JSONObject;
 import servidor.Interaccion;
 
 /**
+ * Es el encargado de procesar los mensajes que entran y salen del cliente
  *
- * @author carlo
+ * @author Karen Dayanna Castaño Orjuela
+ * @author Carlos Alberto Campos Armero
  */
 public class RedCliente {
 

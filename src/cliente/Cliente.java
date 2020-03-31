@@ -12,8 +12,10 @@ import redes.RedCliente;
 import servidor.Interaccion;
 
 /**
+ * Es el encargado de tener todo los componentes de cliente
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Cliente {
 

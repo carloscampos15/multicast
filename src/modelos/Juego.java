@@ -9,8 +9,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 /**
+ * Es el encargado de tenet lo necesario para comenzar un juego
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Juego {
 

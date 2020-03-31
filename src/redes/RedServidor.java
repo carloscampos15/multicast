@@ -14,8 +14,9 @@ import modelos.Juego;
 import modelos.Jugador;
 
 /**
- *
- * @author carlo
+ * Se encarga de controlar todo lo que tiene que ver con el servidor
+ * @author Karen Dayanna Castaño Orjuela
+ * @author Carlos Alberto Campos Armero
  */
 public class RedServidor {
 

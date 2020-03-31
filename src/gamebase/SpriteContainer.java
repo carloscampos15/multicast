@@ -8,8 +8,10 @@ package gamebase;
 import java.util.ArrayList;
 
 /**
+ * Es el encargado de tener los metodos generales para poder organizar el cuadrado
  *
- * @author educacion
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public abstract class SpriteContainer extends Sprite implements GraphicContainer
 {

@@ -11,8 +11,10 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 /**
+ *Es la encargada de tener todo lo relacionado con la persona
  *
- * @author educacion
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Person extends Sprite {
 
@@ -28,7 +30,11 @@ public class Person extends Sprite {
         this.identificador = identificador;
         setColor(Color.MAGENTA);
     }
-
+    /**
+     * Es la que controla como se mueve la persona
+     * @param direction
+     * @return 
+     */
     public boolean move(int direction) {
         int nx = x;
         int ny = y;

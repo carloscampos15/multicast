@@ -6,8 +6,9 @@
 package servidor;
 
 /**
- *
- * @author carlo
+ * Variables que ayudan en todo el codigo
+ * @author Karen Dayanna Castaño Orjuela
+ * @author Carlos Alberto Campos Armero
  */
 public class Interaccion {
 

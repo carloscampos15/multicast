@@ -18,8 +18,10 @@ import redes.RedServidor;
 import servidor.Interaccion;
 
 /**
+ * Tiene lo necesario para que un jugador pueda ingresar a jugar
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Jugador implements Runnable {
 

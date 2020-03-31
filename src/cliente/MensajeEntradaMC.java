@@ -7,6 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import servidor.Interaccion;
 
+/**
+ * Es el hilo encargado de estar siempre pendiente de recibir un mensaje (multicast)
+ *
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
+ */
 public class MensajeEntradaMC extends Thread {
 
     private boolean isAlive;

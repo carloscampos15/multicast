@@ -12,8 +12,10 @@ import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 /**
+ * 
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class PanelContainer extends JPanel implements GraphicContainer {
 

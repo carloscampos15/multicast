@@ -13,8 +13,10 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 /**
+ * Es donde se van a generar la creacion de las nuevos clientes que desean ingresar
  *
- * @author educacion
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Mundo extends SpriteContainer {
 

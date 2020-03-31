@@ -18,8 +18,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Es la interfaz donde los clientes pueden interactuar y jugar
  *
- * @author DSO
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class GameWindow extends javax.swing.JFrame
         implements GraphicContainer, cliente.Notificable {

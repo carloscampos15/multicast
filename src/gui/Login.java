@@ -11,8 +11,10 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
+ * Es la interfaz donde el cliente se va a identificar
  *
- * @author ACER 53F4
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Login extends javax.swing.JFrame {
 
